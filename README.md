@@ -1,4 +1,9 @@
 
+## Lombok
+```
+Intellij Idea -> Settings -> Compiler -> Annotation Processors -> Enable annotation processing
+```
+
 ## Maven Wrapper
 
 ### Maven Wrapper: New Project
@@ -9,7 +14,7 @@ mvn -N io.takari:maven:0.7.6:wrapper -Dmaven=3.6.2
 ### Maven Wrapper: Build & Run Project
 ```
 ./mvnw clean install
-./mvnw spring-boot:run`
+./mvnw spring-boot:run
 ```
 
 ## Links
