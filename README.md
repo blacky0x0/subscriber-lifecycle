@@ -1,5 +1,6 @@
 
 ## Lombok
+Install [Lombok plugin] and configure:
 ```
 Intellij Idea -> Settings -> Compiler -> Annotation Processors -> Enable annotation processing
 ```
@@ -29,3 +30,4 @@ mvn -N io.takari:maven:0.7.6:wrapper -Dmaven=3.6.2
 [MVN Repository - Maven Core]: https://mvnrepository.com/artifact/org.apache.maven/maven-core
 [MVN Repository - Takari Maven Wrapper]: https://mvnrepository.com/artifact/io.takari/maven-wrapper
 [MVN Repository - Takari Maven Plugin]: https://mvnrepository.com/artifact/io.takari/maven
+[Lombok plugin]: https://plugins.jetbrains.com/plugin/6317-lombok/

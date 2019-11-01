@@ -1,0 +1,2 @@
+insert into subscriber (first_name, last_name, msisdn, balance, status) VALUES ('Philip', 'Fry', '+12025008080', 100, 'Active');
+insert into subscriber (first_name, last_name, msisdn, balance, status) VALUES ('Bender', 'Rodríguez', '+12025008081', 200, 'Active');
