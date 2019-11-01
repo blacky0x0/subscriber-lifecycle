@@ -2,6 +2,7 @@ package com.github.blacky.subscriber_lifecycle.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.blacky.subscriber_lifecycle.jooq.tables.daos.SubscriberDao;
+import com.github.blacky.subscriber_lifecycle.web.transfer.Call;
 import com.github.blacky.subscriber_lifecycle.web.transfer.Status;
 import com.github.blacky.subscriber_lifecycle.service.SubscriberService;
 import com.github.blacky.subscriber_lifecycle.web.transfer.Account;
@@ -31,6 +32,7 @@ class SubscriberControllerTest {
 
     @Test
     void onCall(@Autowired MockMvc mvc) throws Exception {
+        doReturn(new Call()).when(service).onCall(new Call());
         mvc.perform(post("/call")).andExpect(status().isOk());
     }
 

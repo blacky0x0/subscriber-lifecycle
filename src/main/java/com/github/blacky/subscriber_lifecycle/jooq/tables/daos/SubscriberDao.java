@@ -8,6 +8,7 @@ import com.github.blacky.subscriber_lifecycle.jooq.enums.Status;
 import com.github.blacky.subscriber_lifecycle.jooq.tables.Subscriber;
 import com.github.blacky.subscriber_lifecycle.jooq.tables.records.SubscriberRecord;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import javax.annotation.Generated;
@@ -141,5 +142,33 @@ public class SubscriberDao extends DAOImpl<SubscriberRecord, com.github.blacky.s
      */
     public List<com.github.blacky.subscriber_lifecycle.jooq.tables.pojos.Subscriber> fetchByStatus(Status... values) {
         return fetch(Subscriber.SUBSCRIBER.STATUS, values);
+    }
+
+    /**
+     * Fetch records that have <code>created BETWEEN lowerInclusive AND upperInclusive</code>
+     */
+    public List<com.github.blacky.subscriber_lifecycle.jooq.tables.pojos.Subscriber> fetchRangeOfCreated(Timestamp lowerInclusive, Timestamp upperInclusive) {
+        return fetchRange(Subscriber.SUBSCRIBER.CREATED, lowerInclusive, upperInclusive);
+    }
+
+    /**
+     * Fetch records that have <code>created IN (values)</code>
+     */
+    public List<com.github.blacky.subscriber_lifecycle.jooq.tables.pojos.Subscriber> fetchByCreated(Timestamp... values) {
+        return fetch(Subscriber.SUBSCRIBER.CREATED, values);
+    }
+
+    /**
+     * Fetch records that have <code>updated BETWEEN lowerInclusive AND upperInclusive</code>
+     */
+    public List<com.github.blacky.subscriber_lifecycle.jooq.tables.pojos.Subscriber> fetchRangeOfUpdated(Timestamp lowerInclusive, Timestamp upperInclusive) {
+        return fetchRange(Subscriber.SUBSCRIBER.UPDATED, lowerInclusive, upperInclusive);
+    }
+
+    /**
+     * Fetch records that have <code>updated IN (values)</code>
+     */
+    public List<com.github.blacky.subscriber_lifecycle.jooq.tables.pojos.Subscriber> fetchByUpdated(Timestamp... values) {
+        return fetch(Subscriber.SUBSCRIBER.UPDATED, values);
     }
 }

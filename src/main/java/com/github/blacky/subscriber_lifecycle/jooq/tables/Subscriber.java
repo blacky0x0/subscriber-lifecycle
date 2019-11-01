@@ -10,6 +10,7 @@ import com.github.blacky.subscriber_lifecycle.jooq.Public;
 import com.github.blacky.subscriber_lifecycle.jooq.enums.Status;
 import com.github.blacky.subscriber_lifecycle.jooq.tables.records.SubscriberRecord;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,7 +22,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row6;
+import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -43,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Subscriber extends TableImpl<SubscriberRecord> {
 
-    private static final long serialVersionUID = 787937416;
+    private static final long serialVersionUID = -1517421702;
 
     /**
      * The reference instance of <code>public.subscriber</code>
@@ -66,27 +67,37 @@ public class Subscriber extends TableImpl<SubscriberRecord> {
     /**
      * The column <code>public.subscriber.first_name</code>.
      */
-    public final TableField<SubscriberRecord, String> FIRST_NAME = createField(DSL.name("first_name"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<SubscriberRecord, String> FIRST_NAME = createField(DSL.name("first_name"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.subscriber.last_name</code>.
      */
-    public final TableField<SubscriberRecord, String> LAST_NAME = createField(DSL.name("last_name"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<SubscriberRecord, String> LAST_NAME = createField(DSL.name("last_name"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.subscriber.msisdn</code>.
      */
-    public final TableField<SubscriberRecord, String> MSISDN = createField(DSL.name("msisdn"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<SubscriberRecord, String> MSISDN = createField(DSL.name("msisdn"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.subscriber.balance</code>.
      */
-    public final TableField<SubscriberRecord, Long> BALANCE = createField(DSL.name("balance"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<SubscriberRecord, Long> BALANCE = createField(DSL.name("balance"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * The column <code>public.subscriber.status</code>.
      */
-    public final TableField<SubscriberRecord, Status> STATUS = createField(DSL.name("status"), org.jooq.impl.SQLDataType.VARCHAR.asEnumDataType(com.github.blacky.subscriber_lifecycle.jooq.enums.Status.class), this, "");
+    public final TableField<SubscriberRecord, Status> STATUS = createField(DSL.name("status"), org.jooq.impl.SQLDataType.VARCHAR.nullable(false).defaultValue(org.jooq.impl.DSL.field("'Active'::status", org.jooq.impl.SQLDataType.VARCHAR)).asEnumDataType(com.github.blacky.subscriber_lifecycle.jooq.enums.Status.class), this, "");
+
+    /**
+     * The column <code>public.subscriber.created</code>.
+     */
+    public final TableField<SubscriberRecord, Timestamp> CREATED = createField(DSL.name("created"), org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>public.subscriber.updated</code>.
+     */
+    public final TableField<SubscriberRecord, Timestamp> UPDATED = createField(DSL.name("updated"), org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * Create a <code>public.subscriber</code> table reference
@@ -173,11 +184,11 @@ public class Subscriber extends TableImpl<SubscriberRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Long, String, String, String, Long, Status> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row8<Long, String, String, String, Long, Status, Timestamp, Timestamp> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }

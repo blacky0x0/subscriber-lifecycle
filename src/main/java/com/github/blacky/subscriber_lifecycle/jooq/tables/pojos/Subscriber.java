@@ -7,8 +7,10 @@ package com.github.blacky.subscriber_lifecycle.jooq.tables.pojos;
 import com.github.blacky.subscriber_lifecycle.jooq.enums.Status;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.annotation.Generated;
+import javax.validation.constraints.NotNull;
 
 
 /**
@@ -24,14 +26,16 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Subscriber implements Serializable {
 
-    private static final long serialVersionUID = -370844609;
+    private static final long serialVersionUID = 1027455289;
 
-    private Long   id;
-    private String firstName;
-    private String lastName;
-    private String msisdn;
-    private Long   balance;
-    private Status status;
+    private Long      id;
+    private String    firstName;
+    private String    lastName;
+    private String    msisdn;
+    private Long      balance;
+    private Status    status;
+    private Timestamp created;
+    private Timestamp updated;
 
     public Subscriber() {}
 
@@ -42,15 +46,19 @@ public class Subscriber implements Serializable {
         this.msisdn = value.msisdn;
         this.balance = value.balance;
         this.status = value.status;
+        this.created = value.created;
+        this.updated = value.updated;
     }
 
     public Subscriber(
-        Long   id,
-        String firstName,
-        String lastName,
-        String msisdn,
-        Long   balance,
-        Status status
+        Long      id,
+        String    firstName,
+        String    lastName,
+        String    msisdn,
+        Long      balance,
+        Status    status,
+        Timestamp created,
+        Timestamp updated
     ) {
         this.id = id;
         this.firstName = firstName;
@@ -58,6 +66,8 @@ public class Subscriber implements Serializable {
         this.msisdn = msisdn;
         this.balance = balance;
         this.status = status;
+        this.created = created;
+        this.updated = updated;
     }
 
     public Long getId() {
@@ -68,6 +78,7 @@ public class Subscriber implements Serializable {
         this.id = id;
     }
 
+    @NotNull
     public String getFirstName() {
         return this.firstName;
     }
@@ -76,6 +87,7 @@ public class Subscriber implements Serializable {
         this.firstName = firstName;
     }
 
+    @NotNull
     public String getLastName() {
         return this.lastName;
     }
@@ -84,6 +96,7 @@ public class Subscriber implements Serializable {
         this.lastName = lastName;
     }
 
+    @NotNull
     public String getMsisdn() {
         return this.msisdn;
     }
@@ -108,6 +121,22 @@ public class Subscriber implements Serializable {
         this.status = status;
     }
 
+    public Timestamp getCreated() {
+        return this.created;
+    }
+
+    public void setCreated(Timestamp created) {
+        this.created = created;
+    }
+
+    public Timestamp getUpdated() {
+        return this.updated;
+    }
+
+    public void setUpdated(Timestamp updated) {
+        this.updated = updated;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Subscriber (");
@@ -118,6 +147,8 @@ public class Subscriber implements Serializable {
         sb.append(", ").append(msisdn);
         sb.append(", ").append(balance);
         sb.append(", ").append(status);
+        sb.append(", ").append(created);
+        sb.append(", ").append(updated);
 
         sb.append(")");
         return sb.toString();
