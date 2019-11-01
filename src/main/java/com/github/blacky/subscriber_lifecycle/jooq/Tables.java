@@ -4,6 +4,7 @@
 package com.github.blacky.subscriber_lifecycle.jooq;
 
 
+import com.github.blacky.subscriber_lifecycle.jooq.tables.Call;
 import com.github.blacky.subscriber_lifecycle.jooq.tables.Subscriber;
 
 import javax.annotation.Generated;
@@ -21,6 +22,11 @@ import javax.annotation.Generated;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+
+    /**
+     * The table <code>public.call</code>.
+     */
+    public static final Call CALL = Call.CALL;
 
     /**
      * The table <code>public.subscriber</code>.

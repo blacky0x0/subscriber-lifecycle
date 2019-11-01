@@ -4,6 +4,7 @@
 package com.github.blacky.subscriber_lifecycle.jooq;
 
 
+import com.github.blacky.subscriber_lifecycle.jooq.tables.Call;
 import com.github.blacky.subscriber_lifecycle.jooq.tables.Subscriber;
 
 import javax.annotation.Generated;
@@ -30,6 +31,7 @@ public class Indexes {
     // INDEX definitions
     // -------------------------------------------------------------------------
 
+    public static final Index CALL_PKEY = Indexes0.CALL_PKEY;
     public static final Index SUBSCRIBER_PKEY = Indexes0.SUBSCRIBER_PKEY;
 
     // -------------------------------------------------------------------------
@@ -37,6 +39,7 @@ public class Indexes {
     // -------------------------------------------------------------------------
 
     private static class Indexes0 {
+        public static Index CALL_PKEY = Internal.createIndex("call_pkey", Call.CALL, new OrderField[] { Call.CALL.ID }, true);
         public static Index SUBSCRIBER_PKEY = Internal.createIndex("subscriber_pkey", Subscriber.SUBSCRIBER, new OrderField[] { Subscriber.SUBSCRIBER.ID }, true);
     }
 }

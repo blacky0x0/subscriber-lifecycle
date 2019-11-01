@@ -4,6 +4,7 @@
 package com.github.blacky.subscriber_lifecycle.jooq;
 
 
+import com.github.blacky.subscriber_lifecycle.jooq.tables.Call;
 import com.github.blacky.subscriber_lifecycle.jooq.tables.Subscriber;
 
 import java.util.ArrayList;
@@ -31,12 +32,17 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 1130586913;
+    private static final long serialVersionUID = 2098245888;
 
     /**
      * The reference instance of <code>public</code>
      */
     public static final Public PUBLIC = new Public();
+
+    /**
+     * The table <code>public.call</code>.
+     */
+    public final Call CALL = com.github.blacky.subscriber_lifecycle.jooq.tables.Call.CALL;
 
     /**
      * The table <code>public.subscriber</code>.
@@ -65,6 +71,8 @@ public class Public extends SchemaImpl {
 
     private final List<Sequence<?>> getSequences0() {
         return Arrays.<Sequence<?>>asList(
+            Sequences.CALL_ID_SEQ,
+            Sequences.CALL_SUBSCRIBER_ID_SEQ,
             Sequences.SUBSCRIBER_ID_SEQ);
     }
 
@@ -77,6 +85,7 @@ public class Public extends SchemaImpl {
 
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
+            Call.CALL,
             Subscriber.SUBSCRIBER);
     }
 }

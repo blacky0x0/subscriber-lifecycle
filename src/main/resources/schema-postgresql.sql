@@ -10,3 +10,10 @@ CREATE TABLE subscriber (
     created    timestamp DEFAULT now()            NOT NULL,
     updated    timestamp DEFAULT now()            NOT NULL
 );
+
+CREATE TABLE call (
+    id            bigserial PRIMARY KEY   NOT NULL,
+    subscriber_id bigserial REFERENCES subscriber (id) ON DELETE CASCADE,
+    created       timestamp DEFAULT now() NOT NULL,
+    updated       timestamp DEFAULT now() NOT NULL
+);

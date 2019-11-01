@@ -4,11 +4,14 @@
 package com.github.blacky.subscriber_lifecycle.jooq;
 
 
+import com.github.blacky.subscriber_lifecycle.jooq.tables.Call;
 import com.github.blacky.subscriber_lifecycle.jooq.tables.Subscriber;
+import com.github.blacky.subscriber_lifecycle.jooq.tables.records.CallRecord;
 import com.github.blacky.subscriber_lifecycle.jooq.tables.records.SubscriberRecord;
 
 import javax.annotation.Generated;
 
+import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.UniqueKey;
 import org.jooq.impl.Internal;
@@ -32,28 +35,37 @@ public class Keys {
     // IDENTITY definitions
     // -------------------------------------------------------------------------
 
+    public static final Identity<CallRecord, Long> IDENTITY_CALL = Identities0.IDENTITY_CALL;
     public static final Identity<SubscriberRecord, Long> IDENTITY_SUBSCRIBER = Identities0.IDENTITY_SUBSCRIBER;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final UniqueKey<CallRecord> CALL_PKEY = UniqueKeys0.CALL_PKEY;
     public static final UniqueKey<SubscriberRecord> SUBSCRIBER_PKEY = UniqueKeys0.SUBSCRIBER_PKEY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final ForeignKey<CallRecord, SubscriberRecord> CALL__CALL_SUBSCRIBER_ID_FKEY = ForeignKeys0.CALL__CALL_SUBSCRIBER_ID_FKEY;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
 
     private static class Identities0 {
+        public static Identity<CallRecord, Long> IDENTITY_CALL = Internal.createIdentity(Call.CALL, Call.CALL.ID);
         public static Identity<SubscriberRecord, Long> IDENTITY_SUBSCRIBER = Internal.createIdentity(Subscriber.SUBSCRIBER, Subscriber.SUBSCRIBER.ID);
     }
 
     private static class UniqueKeys0 {
+        public static final UniqueKey<CallRecord> CALL_PKEY = Internal.createUniqueKey(Call.CALL, "call_pkey", Call.CALL.ID);
         public static final UniqueKey<SubscriberRecord> SUBSCRIBER_PKEY = Internal.createUniqueKey(Subscriber.SUBSCRIBER, "subscriber_pkey", Subscriber.SUBSCRIBER.ID);
+    }
+
+    private static class ForeignKeys0 {
+        public static final ForeignKey<CallRecord, SubscriberRecord> CALL__CALL_SUBSCRIBER_ID_FKEY = Internal.createForeignKey(com.github.blacky.subscriber_lifecycle.jooq.Keys.SUBSCRIBER_PKEY, Call.CALL, "call__call_subscriber_id_fkey", Call.CALL.SUBSCRIBER_ID);
     }
 }
