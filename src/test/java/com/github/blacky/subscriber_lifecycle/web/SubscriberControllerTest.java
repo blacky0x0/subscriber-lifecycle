@@ -1,6 +1,7 @@
 package com.github.blacky.subscriber_lifecycle.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.blacky.subscriber_lifecycle.jooq.tables.daos.CallDao;
 import com.github.blacky.subscriber_lifecycle.jooq.tables.daos.SubscriberDao;
 import com.github.blacky.subscriber_lifecycle.web.transfer.Call;
 import com.github.blacky.subscriber_lifecycle.web.transfer.Status;
@@ -61,7 +62,10 @@ class SubscriberControllerTest {
         DSLContext dsl;
 
         @MockBean
-        SubscriberDao dao;
+        SubscriberDao subscriberDao;
+
+        @MockBean
+        CallDao callDao;
     }
 
 }
