@@ -2,7 +2,7 @@ package com.github.blacky.subscriber_lifecycle.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.blacky.subscriber_lifecycle.jooq.tables.daos.SubscriberDao;
-import com.github.blacky.subscriber_lifecycle.model.Status;
+import com.github.blacky.subscriber_lifecycle.web.transfer.Status;
 import com.github.blacky.subscriber_lifecycle.service.SubscriberService;
 import com.github.blacky.subscriber_lifecycle.web.transfer.Account;
 import org.jooq.DSLContext;
@@ -42,9 +42,9 @@ class SubscriberControllerTest {
     @Test
     void getAccount(@Autowired MockMvc mvc) throws Exception {
         Account account = new Account(0L, Status.Active);
-        doReturn(account).when(service).getAccount();
+        doReturn(account).when(service).getAccount("+12025008080");
         String expected = new ObjectMapper().writeValueAsString(account);
-        mvc.perform(get("/account")).andExpect(status().isOk()).andExpect(content().json(expected));
+        mvc.perform(get("/account/+12025008080")).andExpect(status().isOk()).andExpect(content().json(expected));
     }
 
     @Test
