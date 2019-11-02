@@ -29,8 +29,12 @@ import static org.jooq.impl.DSL.field;
 @Service
 public class SubscriberService {
 
+    private static final int PRICE_CALL = 50;
+    private static final int PRICE_SMS = 1;
+
     @Value("${subscriber.lifecycle.calls_number_limit:3}")
     private int callsNumberLimit;
+
     private final DSLContext ctx;
     private final SubscriberDao subscriberRepository;
     private final CallDao callRepository;
@@ -73,7 +77,7 @@ public class SubscriberService {
         call.setSubscriberId(subscriber.getId());
         callRepository.insert(call);
 
-        subscriber.setBalance(subscriber.getBalance() - 50);
+        subscriber.setBalance(subscriber.getBalance() - PRICE_CALL);
         subscriber.setUpdated(Timestamp.from(Instant.now()));
         if (subscriber.getBalance() < 0) {
             subscriber.setStatus(Blocked);
@@ -95,7 +99,7 @@ public class SubscriberService {
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
         }
 
-        subscriber.setBalance(subscriber.getBalance() - 1);
+        subscriber.setBalance(subscriber.getBalance() - PRICE_SMS);
         subscriber.setUpdated(Timestamp.from(Instant.now()));
         if (subscriber.getBalance() < 0) {
             subscriber.setStatus(Blocked);
