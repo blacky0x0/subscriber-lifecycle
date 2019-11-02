@@ -1,16 +1,28 @@
 package com.github.blacky.subscriber_lifecycle.service;
 
+import com.github.blacky.subscriber_lifecycle.jooq.tables.daos.CallDao;
 import com.github.blacky.subscriber_lifecycle.jooq.tables.daos.SubscriberDao;
+import com.github.blacky.subscriber_lifecycle.jooq.tables.pojos.Call;
 import com.github.blacky.subscriber_lifecycle.jooq.tables.pojos.Subscriber;
-import com.github.blacky.subscriber_lifecycle.web.transfer.*;
+import com.github.blacky.subscriber_lifecycle.web.transfer.Account;
+import com.github.blacky.subscriber_lifecycle.web.transfer.Deposit;
+import com.github.blacky.subscriber_lifecycle.web.transfer.Sms;
+import com.github.blacky.subscriber_lifecycle.web.transfer.Status;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 
-import static com.github.blacky.subscriber_lifecycle.jooq.enums.Status.*;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.Instant;
+
+import static com.github.blacky.subscriber_lifecycle.jooq.enums.Status.Active;
+import static com.github.blacky.subscriber_lifecycle.jooq.enums.Status.Blocked;
+import static com.github.blacky.subscriber_lifecycle.jooq.tables.Call.CALL;
 import static com.github.blacky.subscriber_lifecycle.jooq.tables.Subscriber.SUBSCRIBER;
 import static org.jooq.impl.DSL.field;
 
@@ -20,48 +32,104 @@ public class SubscriberService {
     @Value("${subscriber.lifecycle.calls_number_limit:3}")
     private int callsNumberLimit;
     private final DSLContext ctx;
-    private final SubscriberDao repository;
+    private final SubscriberDao subscriberRepository;
+    private final CallDao callRepository;
 
     @Autowired
-    public SubscriberService(DSLContext ctx, SubscriberDao repository) {
+    public SubscriberService(DSLContext ctx, SubscriberDao subscriberRepository, CallDao callRepository) {
         this.ctx = ctx;
-        this.repository = repository;
+        this.subscriberRepository = subscriberRepository;
+        this.callRepository = callRepository;
     }
 
-    public Object onCall(Call call) {
+    /**
+     * Make a call from one subscriber to another.
+     * Update subscriber's balance and register a call.
+     */
+    @Transactional
+    public void onCall(com.github.blacky.subscriber_lifecycle.web.transfer.Call callInfo) {
+        Subscriber subscriber = subscriberRepository.fetchOne(field(SUBSCRIBER.MSISDN), callInfo.getFrom());
 
-        Subscriber to = repository.fetchOne(field(SUBSCRIBER.MSISDN), call.getTo());
-        Subscriber from = repository.fetchOne(field(SUBSCRIBER.MSISDN), call.getFrom());
-
-        if (to == null || from == null) {
-            throw new HttpClientErrorException(HttpStatus.NOT_FOUND); // 404
+        if (subscriber == null) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
         }
 
-        if (from.getBalance() < 0) {
-            throw new RuntimeException("Negative balance. Operation denied");
-        }
-
-        if (from.getStatus() == Blocked) {
+        if (subscriber.getStatus() == Blocked) {
             throw new RuntimeException("Account is blocked. Operation denied");
         }
 
-        return null;
+        int countCallsToday = ctx
+                .selectCount()
+                .from(CALL)
+                .where(CALL.SUBSCRIBER_ID.eq(subscriber.getId())
+                        .and(CALL.CREATED.cast(Date.class).eq(new Date(Instant.now().toEpochMilli()))))
+                .fetchOneInto(Integer.class);
+
+        if (countCallsToday > callsNumberLimit) {
+            throw new RuntimeException("Call limit exceeded!");
+        }
+
+        Call call = new Call();
+        call.setSubscriberId(subscriber.getId());
+        callRepository.insert(call);
+
+        subscriber.setBalance(subscriber.getBalance() - 50);
+        subscriber.setUpdated(Timestamp.from(Instant.now()));
+        if (subscriber.getBalance() < 0) {
+            subscriber.setStatus(Blocked);
+        }
+        subscriberRepository.update(subscriber);
     }
 
-    public Object onSms(Message message) {
-        return null;
+    /**
+     * Send a text message from one subscriber to another.
+     * Update subscriber's balalnce.
+     */
+    public void onSms(Sms sms) {
+        Subscriber subscriber = subscriberRepository.fetchOne(field(SUBSCRIBER.MSISDN), sms.getFrom());
+        if (subscriber == null) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
+        }
+
+        if (subscriber.getStatus() == Blocked) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
+        }
+
+        subscriber.setBalance(subscriber.getBalance() - 1);
+        subscriber.setUpdated(Timestamp.from(Instant.now()));
+        if (subscriber.getBalance() < 0) {
+            subscriber.setStatus(Blocked);
+        }
+        subscriberRepository.update(subscriber);
     }
 
+    /**
+     * Get subscriber's account information by specified msisdn
+     */
     public Account getAccount(String msisdn) {
-        Subscriber subscriber = repository.fetchOne(field(SUBSCRIBER.MSISDN), msisdn);
+        Subscriber subscriber = subscriberRepository.fetchOne(field(SUBSCRIBER.MSISDN), msisdn);
         if (subscriber == null) {
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
         }
         return new Account(subscriber.getBalance(), Status.of(subscriber.getStatus()));
     }
 
-    public Object makeDeposit(Deposit deposit) {
-        return null;
+    /**
+     * Populate subscriber's account with a specified amount
+     */
+    public void makeDeposit(Deposit deposit) {
+        Subscriber subscriber = subscriberRepository.fetchOne(field(SUBSCRIBER.MSISDN), deposit.getMsisdn());
+        if (subscriber == null) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
+        }
+
+        subscriber.setBalance(subscriber.getBalance() + deposit.getAmount());
+        subscriber.setUpdated(Timestamp.from(Instant.now()));
+        if (subscriber.getStatus() == Blocked && subscriber.getBalance() >= 0) {
+            subscriber.setStatus(Active);
+        }
+
+        subscriberRepository.update(subscriber);
     }
 
 }

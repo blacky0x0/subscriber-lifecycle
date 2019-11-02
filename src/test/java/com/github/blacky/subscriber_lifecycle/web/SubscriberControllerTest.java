@@ -3,10 +3,8 @@ package com.github.blacky.subscriber_lifecycle.web;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.blacky.subscriber_lifecycle.jooq.tables.daos.CallDao;
 import com.github.blacky.subscriber_lifecycle.jooq.tables.daos.SubscriberDao;
-import com.github.blacky.subscriber_lifecycle.web.transfer.Call;
-import com.github.blacky.subscriber_lifecycle.web.transfer.Status;
+import com.github.blacky.subscriber_lifecycle.web.transfer.*;
 import com.github.blacky.subscriber_lifecycle.service.SubscriberService;
-import com.github.blacky.subscriber_lifecycle.web.transfer.Account;
 import org.jooq.DSLContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +14,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -33,13 +33,18 @@ class SubscriberControllerTest {
 
     @Test
     void onCall(@Autowired MockMvc mvc) throws Exception {
-        doReturn(new Call()).when(service).onCall(new Call());
-        mvc.perform(post("/call")).andExpect(status().isOk());
+        Call call = new Call();
+        doNothing().when(service).onCall(call);
+        String body = new ObjectMapper().writeValueAsString(call);
+        mvc.perform(post("/call").content(body).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
     }
 
     @Test
     void onSms(@Autowired MockMvc mvc) throws Exception {
-        mvc.perform(post("/sms")).andExpect(status().isOk());
+        Sms sms = new Sms();
+        doNothing().when(service).onSms(sms);
+        String body = new ObjectMapper().writeValueAsString(sms);
+        mvc.perform(post("/sms").content(body).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
     }
 
     @Test
@@ -52,7 +57,10 @@ class SubscriberControllerTest {
 
     @Test
     void makeDeposit(@Autowired MockMvc mvc) throws Exception {
-        mvc.perform(post("/account/deposit")).andExpect(status().isOk());
+        Deposit deposit = new Deposit();
+        doNothing().when(service).makeDeposit(deposit);
+        String body = new ObjectMapper().writeValueAsString(deposit);
+        mvc.perform(post("/account/deposit").content(body).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
     }
 
 

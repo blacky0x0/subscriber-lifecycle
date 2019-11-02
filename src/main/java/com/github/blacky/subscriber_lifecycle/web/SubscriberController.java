@@ -4,13 +4,10 @@ import com.github.blacky.subscriber_lifecycle.service.SubscriberService;
 import com.github.blacky.subscriber_lifecycle.web.transfer.Account;
 import com.github.blacky.subscriber_lifecycle.web.transfer.Call;
 import com.github.blacky.subscriber_lifecycle.web.transfer.Deposit;
-import com.github.blacky.subscriber_lifecycle.web.transfer.Message;
+import com.github.blacky.subscriber_lifecycle.web.transfer.Sms;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
 @RestController
@@ -24,13 +21,13 @@ public class SubscriberController {
     }
 
     @PostMapping("/call")
-    public Object onCall(Call call) {
-        return service.onCall(call);
+    public void onCall(@RequestBody Call call) {
+        service.onCall(call);
     }
 
     @PostMapping("/sms")
-    public Object onSms(Message message) {
-        return service.onSms(message);
+    public void onSms(@RequestBody Sms sms) {
+        service.onSms(sms);
     }
 
     @GetMapping("/account/{msisdn}")
@@ -44,8 +41,8 @@ public class SubscriberController {
     }
 
     @PostMapping("/account/deposit")
-    public Object makeDeposit(Deposit deposit) {
-        return service.makeDeposit(deposit);
+    public void makeDeposit(@RequestBody Deposit deposit) {
+        service.makeDeposit(deposit);
     }
 
 }

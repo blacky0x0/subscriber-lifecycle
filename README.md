@@ -1,4 +1,36 @@
 
+## Endpoints
+Get subscriber's balance and status:
+```
+GET {url:port}/account/{msisdn}
+```
+
+Make a call:
+```
+POST {url:port}/call
+JSON body: {"to": "target msisdn", "from": "source msisdn"} 
+```
+
+Send a SMS:
+```
+POST {url:port}/sms
+JSON body: {"to": "target msisdn", "from": "source msisdn", "text": "any text message"}
+```
+
+Make a deposit to specific phone number:
+```
+POST {url:port}/account/deposit
+JSON body: {"amount": 1, "msisdn": "target msisdn"}
+```
+
+Examples:
+```
+curl -i -X GET localhost:8080/account/+12025008080
+curl -i -X POST -H "Content-Type: application/json" localhost:8080/call --data '{"to": "+12025008080", "from": "+12025008081"}'
+curl -i -X POST -H "Content-Type: application/json" localhost:8080/sms --data '{"to": "+12025008080", "from": "+12025008081", "text", "Good news, everyone!"}'
+curl -i -X POST -H "Content-Type: application/json" localhost:8080/account/deposit --data '{"amount": 100, "msisdn": "+12025008080"}'
+```
+
 ## Lombok
 Install [Lombok plugin] and configure:
 ```
