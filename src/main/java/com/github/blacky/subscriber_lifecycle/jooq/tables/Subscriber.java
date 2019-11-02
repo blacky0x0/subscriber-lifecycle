@@ -44,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Subscriber extends TableImpl<SubscriberRecord> {
 
-    private static final long serialVersionUID = -1517421702;
+    private static final long serialVersionUID = -1784236932;
 
     /**
      * The reference instance of <code>public.subscriber</code>
@@ -139,7 +139,7 @@ public class Subscriber extends TableImpl<SubscriberRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.SUBSCRIBER_PKEY);
+        return Arrays.<Index>asList(Indexes.SUBSCRIBER_MSISDN_KEY, Indexes.SUBSCRIBER_PKEY);
     }
 
     @Override
@@ -154,7 +154,7 @@ public class Subscriber extends TableImpl<SubscriberRecord> {
 
     @Override
     public List<UniqueKey<SubscriberRecord>> getKeys() {
-        return Arrays.<UniqueKey<SubscriberRecord>>asList(Keys.SUBSCRIBER_PKEY);
+        return Arrays.<UniqueKey<SubscriberRecord>>asList(Keys.SUBSCRIBER_PKEY, Keys.SUBSCRIBER_MSISDN_KEY);
     }
 
     @Override

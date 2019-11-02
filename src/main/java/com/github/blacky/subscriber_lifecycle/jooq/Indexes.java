@@ -32,6 +32,7 @@ public class Indexes {
     // -------------------------------------------------------------------------
 
     public static final Index CALL_PKEY = Indexes0.CALL_PKEY;
+    public static final Index SUBSCRIBER_MSISDN_KEY = Indexes0.SUBSCRIBER_MSISDN_KEY;
     public static final Index SUBSCRIBER_PKEY = Indexes0.SUBSCRIBER_PKEY;
 
     // -------------------------------------------------------------------------
@@ -40,6 +41,7 @@ public class Indexes {
 
     private static class Indexes0 {
         public static Index CALL_PKEY = Internal.createIndex("call_pkey", Call.CALL, new OrderField[] { Call.CALL.ID }, true);
+        public static Index SUBSCRIBER_MSISDN_KEY = Internal.createIndex("subscriber_msisdn_key", Subscriber.SUBSCRIBER, new OrderField[] { Subscriber.SUBSCRIBER.MSISDN }, true);
         public static Index SUBSCRIBER_PKEY = Internal.createIndex("subscriber_pkey", Subscriber.SUBSCRIBER, new OrderField[] { Subscriber.SUBSCRIBER.ID }, true);
     }
 }

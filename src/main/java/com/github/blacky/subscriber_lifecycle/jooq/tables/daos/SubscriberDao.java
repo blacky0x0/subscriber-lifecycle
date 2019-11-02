@@ -117,6 +117,13 @@ public class SubscriberDao extends DAOImpl<SubscriberRecord, com.github.blacky.s
     }
 
     /**
+     * Fetch a unique record that has <code>msisdn = value</code>
+     */
+    public com.github.blacky.subscriber_lifecycle.jooq.tables.pojos.Subscriber fetchOneByMsisdn(String value) {
+        return fetchOne(Subscriber.SUBSCRIBER.MSISDN, value);
+    }
+
+    /**
      * Fetch records that have <code>balance BETWEEN lowerInclusive AND upperInclusive</code>
      */
     public List<com.github.blacky.subscriber_lifecycle.jooq.tables.pojos.Subscriber> fetchRangeOfBalance(Long lowerInclusive, Long upperInclusive) {

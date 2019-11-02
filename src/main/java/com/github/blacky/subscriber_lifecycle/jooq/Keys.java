@@ -44,6 +44,7 @@ public class Keys {
 
     public static final UniqueKey<CallRecord> CALL_PKEY = UniqueKeys0.CALL_PKEY;
     public static final UniqueKey<SubscriberRecord> SUBSCRIBER_PKEY = UniqueKeys0.SUBSCRIBER_PKEY;
+    public static final UniqueKey<SubscriberRecord> SUBSCRIBER_MSISDN_KEY = UniqueKeys0.SUBSCRIBER_MSISDN_KEY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -63,6 +64,7 @@ public class Keys {
     private static class UniqueKeys0 {
         public static final UniqueKey<CallRecord> CALL_PKEY = Internal.createUniqueKey(Call.CALL, "call_pkey", Call.CALL.ID);
         public static final UniqueKey<SubscriberRecord> SUBSCRIBER_PKEY = Internal.createUniqueKey(Subscriber.SUBSCRIBER, "subscriber_pkey", Subscriber.SUBSCRIBER.ID);
+        public static final UniqueKey<SubscriberRecord> SUBSCRIBER_MSISDN_KEY = Internal.createUniqueKey(Subscriber.SUBSCRIBER, "subscriber_msisdn_key", Subscriber.SUBSCRIBER.MSISDN);
     }
 
     private static class ForeignKeys0 {

@@ -4,7 +4,7 @@ CREATE TABLE subscriber (
     id         bigserial PRIMARY KEY              NOT NULL,
     first_name text                               NOT NULL,
     last_name  text                               NOT NULL,
-    msisdn     text                               NOT NULL,
+    msisdn     text      UNIQUE                   NOT NULL,
     balance    bigint    DEFAULT 0                NOT NULL,
     status     status    DEFAULT 'Active'::status NOT NULL,
     created    timestamp DEFAULT now()            NOT NULL,
