@@ -6,9 +6,7 @@ import com.github.blacky.subscriber_lifecycle.web.transfer.Call;
 import com.github.blacky.subscriber_lifecycle.web.transfer.Deposit;
 import com.github.blacky.subscriber_lifecycle.web.transfer.Sms;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 
 @RestController
 public class SubscriberController {
@@ -32,11 +30,6 @@ public class SubscriberController {
 
     @GetMapping("/account/{msisdn}")
     public Account getAccount(@PathVariable String msisdn) {
-
-        if (msisdn == null || msisdn.trim().isEmpty()) {
-            throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
-        }
-
         return service.getAccount(msisdn);
     }
 

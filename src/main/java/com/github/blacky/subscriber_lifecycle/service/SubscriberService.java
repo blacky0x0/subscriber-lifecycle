@@ -1,5 +1,8 @@
 package com.github.blacky.subscriber_lifecycle.service;
 
+import com.github.blacky.subscriber_lifecycle.exception.SubscriberBlockedException;
+import com.github.blacky.subscriber_lifecycle.exception.SubscriberEntityNotFoundException;
+import com.github.blacky.subscriber_lifecycle.exception.SubscriberLimitExceededException;
 import com.github.blacky.subscriber_lifecycle.jooq.tables.daos.CallDao;
 import com.github.blacky.subscriber_lifecycle.jooq.tables.daos.SubscriberDao;
 import com.github.blacky.subscriber_lifecycle.jooq.tables.pojos.Call;
@@ -11,10 +14,8 @@ import com.github.blacky.subscriber_lifecycle.web.transfer.Status;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -55,11 +56,11 @@ public class SubscriberService {
         Subscriber subscriber = subscriberRepository.fetchOne(field(SUBSCRIBER.MSISDN), callInfo.getFrom());
 
         if (subscriber == null) {
-            throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
+            throw new SubscriberEntityNotFoundException(callInfo.getFrom());
         }
 
         if (subscriber.getStatus() == Blocked) {
-            throw new RuntimeException("Account is blocked. Operation denied");
+            throw new SubscriberBlockedException(subscriber.getMsisdn());
         }
 
         int countCallsToday = ctx
@@ -69,8 +70,8 @@ public class SubscriberService {
                         .and(CALL.CREATED.cast(Date.class).eq(new Date(Instant.now().toEpochMilli()))))
                 .fetchOneInto(Integer.class);
 
-        if (countCallsToday > callsNumberLimit) {
-            throw new RuntimeException("Call limit exceeded!");
+        if (countCallsToday >= callsNumberLimit) {
+            throw new SubscriberLimitExceededException(subscriber.getMsisdn());
         }
 
         Call call = new Call();
@@ -87,16 +88,16 @@ public class SubscriberService {
 
     /**
      * Send a text message from one subscriber to another.
-     * Update subscriber's balalnce.
+     * Update subscriber's balance.
      */
     public void onSms(Sms sms) {
         Subscriber subscriber = subscriberRepository.fetchOne(field(SUBSCRIBER.MSISDN), sms.getFrom());
         if (subscriber == null) {
-            throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
+            throw new SubscriberEntityNotFoundException(sms.getFrom());
         }
 
         if (subscriber.getStatus() == Blocked) {
-            throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
+            throw new SubscriberBlockedException(subscriber.getMsisdn());
         }
 
         subscriber.setBalance(subscriber.getBalance() - PRICE_SMS);
@@ -113,7 +114,7 @@ public class SubscriberService {
     public Account getAccount(String msisdn) {
         Subscriber subscriber = subscriberRepository.fetchOne(field(SUBSCRIBER.MSISDN), msisdn);
         if (subscriber == null) {
-            throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
+            throw new SubscriberEntityNotFoundException(msisdn);
         }
         return new Account(subscriber.getBalance(), Status.of(subscriber.getStatus()));
     }
@@ -124,7 +125,7 @@ public class SubscriberService {
     public void makeDeposit(Deposit deposit) {
         Subscriber subscriber = subscriberRepository.fetchOne(field(SUBSCRIBER.MSISDN), deposit.getMsisdn());
         if (subscriber == null) {
-            throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
+            throw new SubscriberEntityNotFoundException(deposit.getMsisdn());
         }
 
         subscriber.setBalance(subscriber.getBalance() + deposit.getAmount());
