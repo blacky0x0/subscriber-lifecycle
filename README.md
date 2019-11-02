@@ -1,4 +1,15 @@
 
+## Prepare Database
+Install Postgres v10 or greater. 
+By default, user and database are called as `postgres`. Change credentials if needed. 
+Run `com.github.blacky.subscriber_lifecycle.tool.InitDatabase` script 
+```
+./mvnw clean install -DskipTests
+cd target/subscriber-lifecycle/WEB-INF/
+java -classpath "lib/*:classes/." com.github.blacky.subscriber_lifecycle.tool.InitDatabase
+```
+or execute `schema-postgresql.sql`, `data-postgresql.sql` scripts under `src/main/resources/` directory.
+
 ## Endpoints
 Get subscriber's balance and status:
 ```
