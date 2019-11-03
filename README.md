@@ -1,7 +1,8 @@
 
 ## Prepare Database
-Install Postgres v10 or greater. 
-By default, user and database are called as `postgres`. Change credentials if needed. 
+Install Postgres v10 or any other. 
+By default, user and database are named as `postgres`. 
+Change credentials in `application.properties` file and other places if needed. 
 Run `com.github.blacky.subscriber_lifecycle.tool.InitDatabase` script 
 ```
 ./mvnw clean install -DskipTests
@@ -48,6 +49,16 @@ Install [Lombok plugin] and configure:
 Intellij Idea -> Settings -> Compiler -> Annotation Processors -> Enable annotation processing
 ```
 
+## Tests
+Some tests require the [Docker engine] so you need to install and configure it before start tests with [TestContainer's framework].
+These tests use embedded Postgres `postgres:10-alpine` version, so you can connect to it in debug mode. 
+
+### Skip Tests
+Use `-DskipTests` parameter to skip tests while building an app.
+```
+./mvnw clean install -DskipTests
+```
+
 ## Maven Wrapper
 
 ### Maven Wrapper: New Project
@@ -74,3 +85,8 @@ mvn -N io.takari:maven:0.7.6:wrapper -Dmaven=3.6.2
 [MVN Repository - Takari Maven Wrapper]: https://mvnrepository.com/artifact/io.takari/maven-wrapper
 [MVN Repository - Takari Maven Plugin]: https://mvnrepository.com/artifact/io.takari/maven
 [Lombok plugin]: https://plugins.jetbrains.com/plugin/6317-lombok/
+[Docker engine]: https://docs.docker.com/
+[Docker Engine: Install on Ubuntu]: https://docs.docker.com/install/linux/docker-ce/ubuntu/
+[Docker Engine: Configure groups on Ubuntu]: https://docs.docker.com/install/linux/linux-postinstall/
+[TestContainer's framework]: https://www.testcontainers.org/
+[Testcontainers: Postgres Module]: https://www.testcontainers.org/modules/databases/postgres/
