@@ -1,8 +1,14 @@
 package com.github.blacky.subscriber_lifecycle.web.transfer;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-@Data
+@Getter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class Call {
     private String to;
     private String from;

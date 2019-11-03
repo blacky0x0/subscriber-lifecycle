@@ -1,10 +1,12 @@
 package com.github.blacky.subscriber_lifecycle.web.transfer;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-@Data
+@Getter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class Account {

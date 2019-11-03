@@ -69,9 +69,8 @@ public class SubscriberServiceTest {
 
     @Test
     public void onCallUnknownMsisdnTest() {
-        com.github.blacky.subscriber_lifecycle.web.transfer.Call call = new com.github.blacky.subscriber_lifecycle.web.transfer.Call();
-        call.setFrom("+12025008081-unknown-msisdn");
-        call.setTo("+12025008080");
+        com.github.blacky.subscriber_lifecycle.web.transfer.Call call =
+                new com.github.blacky.subscriber_lifecycle.web.transfer.Call("+12025008080", "+12025008081-unknown-msisdn");
 
         assertThrows(SubscriberEntityNotFoundException.class,
                 () -> service.onCall(call),
@@ -83,9 +82,8 @@ public class SubscriberServiceTest {
         Subscriber s = of("Bender", "Rodríguez", "+12025008081", 500L, Status.Blocked);
         subscriberRepository.insert(s);
 
-        com.github.blacky.subscriber_lifecycle.web.transfer.Call call = new com.github.blacky.subscriber_lifecycle.web.transfer.Call();
-        call.setFrom(s.getMsisdn());
-        call.setTo("+12025008080");
+        com.github.blacky.subscriber_lifecycle.web.transfer.Call call =
+                new com.github.blacky.subscriber_lifecycle.web.transfer.Call("+12025008080", s.getMsisdn());
 
         assertThrows(SubscriberBlockedException.class,
                 () -> service.onCall(call),
@@ -98,9 +96,8 @@ public class SubscriberServiceTest {
         subscriberRepository.insert(subs);
         callRepository.insert(of(subs.getId()), of(subs.getId()), of(subs.getId()), of(subs.getId()), of(subs.getId()));
 
-        com.github.blacky.subscriber_lifecycle.web.transfer.Call call = new com.github.blacky.subscriber_lifecycle.web.transfer.Call();
-        call.setFrom(subs.getMsisdn());
-        call.setTo("+12025008085");
+        com.github.blacky.subscriber_lifecycle.web.transfer.Call call =
+                new com.github.blacky.subscriber_lifecycle.web.transfer.Call("+12025008085", subs.getMsisdn());
 
         assertThrows(SubscriberLimitExceededException.class,
                 () -> service.onCall(call),
@@ -111,9 +108,8 @@ public class SubscriberServiceTest {
     public void onLastCallBeforeBlockedTest() {
         Subscriber subscriber = of("Leela", "Turanga", "+12025008085", 10L, Status.Active);
         subscriberRepository.insert(subscriber);
-        com.github.blacky.subscriber_lifecycle.web.transfer.Call call = new com.github.blacky.subscriber_lifecycle.web.transfer.Call();
-        call.setFrom("+12025008085");
-        call.setTo("+12025008080");
+        com.github.blacky.subscriber_lifecycle.web.transfer.Call call =
+                new com.github.blacky.subscriber_lifecycle.web.transfer.Call("+12025008080", subscriber.getMsisdn());
 
         service.onCall(call);
         long actualBalance = subscriberRepository.fetchOneById(subscriber.getId()).getBalance();
@@ -125,10 +121,7 @@ public class SubscriberServiceTest {
 
     @Test
     public void onSmsUnknownMsisdnTest() {
-        Sms sms = new Sms();
-        sms.setFrom("+12025008085-unknown-msisdn");
-        sms.setTo("+12025008080");
-        sms.setText("some text");
+        Sms sms = new Sms("+12025008080", "+12025008085-unknown-msisdn", "some text");
 
         assertThrows(SubscriberEntityNotFoundException.class,
                 () -> service.onSms(sms),
@@ -139,10 +132,7 @@ public class SubscriberServiceTest {
     public void onSmsBlockedMsisdnTest() {
         Subscriber s = of("Bender", "Rodríguez", "+12025008081", 500L, Status.Blocked);
         subscriberRepository.insert(s);
-        Sms sms = new Sms();
-        sms.setFrom(s.getMsisdn());
-        sms.setTo("+12025008080");
-        sms.setText("some text");
+        Sms sms = new Sms("+12025008080", s.getMsisdn(), "some text");
 
         assertThrows(SubscriberBlockedException.class,
                 () -> service.onSms(sms),
@@ -153,12 +143,9 @@ public class SubscriberServiceTest {
     public void onLastSmsBeforeBlockedTest() {
         Subscriber subscriber = of("Leela", "Turanga", "+12025008085", 0L, Status.Active);
         subscriberRepository.insert(subscriber);
-        Sms sms = new Sms();
-        sms.setFrom("+12025008085");
-        sms.setTo("+12025008080");
-        sms.setText("Well, it wasn't a bad life, if only I could get back that time I spent watching Tron: Legacy");
+        String msg = "Well, it wasn't a bad life, if only I could get back that time I spent watching Tron: Legacy";
 
-        service.onSms(sms);
+        service.onSms(new Sms("+12025008085", subscriber.getMsisdn(), msg));
         long actualBalance = subscriberRepository.fetchOneById(subscriber.getId()).getBalance();
         Status actualStatus = subscriberRepository.fetchOneById(subscriber.getId()).getStatus();
 
@@ -192,11 +179,7 @@ public class SubscriberServiceTest {
         Subscriber subscriber = of("Leela", "Turanga", "+12025008085", 100L, Status.Active);
         subscriberRepository.insert(subscriber);
 
-        Deposit deposit = new Deposit();
-        deposit.setAmount(100);
-        deposit.setMsisdn("+12025008085");
-
-        service.makeDeposit(deposit);
+        service.makeDeposit(new Deposit(100L, "+12025008085"));
         long actualBalance = subscriberRepository.fetchOneById(subscriber.getId()).getBalance();
 
         Assert.assertEquals(200L, actualBalance);
@@ -207,11 +190,7 @@ public class SubscriberServiceTest {
         Subscriber subscriber = of("Leela", "Turanga", "+12025008085", -10L, Status.Blocked);
         subscriberRepository.insert(subscriber);
 
-        Deposit deposit = new Deposit();
-        deposit.setAmount(100);
-        deposit.setMsisdn("+12025008085");
-
-        service.makeDeposit(deposit);
+        service.makeDeposit(new Deposit(100L, "+12025008085"));
         long actualBalance = subscriberRepository.fetchOneById(subscriber.getId()).getBalance();
         Status actualStatus = subscriberRepository.fetchOneById(subscriber.getId()).getStatus();
 
@@ -221,9 +200,7 @@ public class SubscriberServiceTest {
 
     @Test
     public void makeDepositSubscriberNotFoundTest() {
-        Deposit deposit = new Deposit();
-        deposit.setAmount(100);
-        deposit.setMsisdn("+12025008085-any-wrong-msisdn");
+        Deposit deposit = new Deposit(100L, "+12025008085-any-wrong-msisdn");
 
         assertThrows(SubscriberEntityNotFoundException.class,
                 () -> service.makeDeposit(deposit),

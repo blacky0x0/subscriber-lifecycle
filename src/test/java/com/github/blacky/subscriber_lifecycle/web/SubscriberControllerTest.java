@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ImportAutoConfiguration(value = SubscriberControllerTest.Conf.class, exclude = {DataSourceAutoConfiguration.class})
 class SubscriberControllerTest {
 
-    @SpyBean
+    @MockBean
     SubscriberService service;
 
     @Test
