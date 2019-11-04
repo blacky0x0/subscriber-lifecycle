@@ -33,7 +33,7 @@ public class SubscriberController {
         return service.getAccount(msisdn);
     }
 
-    @PostMapping("/account/deposit")
+    @PutMapping("/account/deposit")
     public void makeDeposit(@RequestBody Deposit deposit) {
         service.makeDeposit(deposit);
     }
