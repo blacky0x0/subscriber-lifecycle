@@ -31,7 +31,7 @@ JSON body: {"to": "target msisdn", "from": "source msisdn", "text": "any text me
 
 Make a deposit to specific phone number:
 ```
-POST {url:port}/account/deposit
+PUT {url:port}/account/deposit
 JSON body: {"amount": 1, "msisdn": "target msisdn"}
 ```
 
@@ -40,7 +40,7 @@ Examples:
 curl -i -X GET localhost:8080/account/+12025008080
 curl -i -X POST -H "Content-Type: application/json" localhost:8080/call --data '{"to": "+12025008081", "from": "+12025008080"}'
 curl -i -X POST -H "Content-Type: application/json" localhost:8080/sms --data '{"to": "+12025008081", "from": "+12025008080", "text", "Good news, everyone!"}'
-curl -i -X POST -H "Content-Type: application/json" localhost:8080/account/deposit --data '{"amount": 100, "msisdn": "+12025008080"}'
+curl -i -X PUT -H "Content-Type: application/json" localhost:8080/account/deposit --data '{"amount": 100, "msisdn": "+12025008080"}'
 ```
 
 ## Lombok
